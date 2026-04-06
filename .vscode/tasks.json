@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Setup React Frontend",
+      "type": "shell",
+      "command": "npx create-react-app octofit-tracker/frontend --template cra-template --use-npm && npm install bootstrap --prefix octofit-tracker/frontend && npm install react-router-dom --prefix octofit-tracker/frontend && sed -i \"1iimport 'bootstrap/dist/css/bootstrap.min.css';\" octofit-tracker/frontend/src/index.js",
+      "group": "build",
+      "problemMatcher": [],
+      "isBackground": false
+    }
+  ]
+}
