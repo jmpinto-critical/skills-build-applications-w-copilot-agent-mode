@@ -3,28 +3,27 @@ from django.contrib.auth.models import AbstractUser
 
 # User model
 class User(AbstractUser):
-    # Additional fields can be added here
-    pass
+    id = models.BigAutoField(primary_key=True)
 
-# Team model
+# Team model - members stored as JSON list of usernames (avoids Djongo M2M issues)
 class Team(models.Model):
     name = models.CharField(max_length=100, unique=True)
-    members = models.ManyToManyField('User', related_name='teams')
-    created_at = models.DateTimeField(auto_now_add=True)
+    members = models.JSONField(default=list)
 
-# Activity model
+# Activity model - user stored as username string (avoids Djongo FK issues)
 class Activity(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE, related_name='activities')
+    user = models.CharField(max_length=100)
     activity_type = models.CharField(max_length=100)
     duration = models.PositiveIntegerField(help_text='Duration in minutes')
     date = models.DateField()
-    team = models.ForeignKey('Team', on_delete=models.SET_NULL, null=True, blank=True, related_name='activities')
 
-# Workout model
+# Leaderboard model
+class Leaderboard(models.Model):
+    user = models.CharField(max_length=100)
+    score = models.IntegerField(default=0)
+
+# Workout model - suggested_for stored as JSON list of usernames
 class Workout(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    suggested_for = models.ManyToManyField('User', related_name='suggested_workouts', blank=True)
-
-# Leaderboard model (not a real collection, but for API aggregation)
-# No DB model needed; handled in views/serializers
+    suggested_for = models.JSONField(default=list)
